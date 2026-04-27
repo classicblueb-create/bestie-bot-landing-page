@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bestie Bot US Dashboard</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4T63TMG4L5"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-4T63TMG4L5');
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: #f0cdc0;
+            overflow-x: hidden;
+        }
+        
+        .dashboard-container {
+            background-color: #fdf6ec;
+            border-radius: 40px;
+        }
+
+        .card-orange { background-color: #fcdfb2; }
+        .card-blue { background-color: #a7ccef; }
+        .card-purple { background-color: #d1b1f6; }
+        .card-pink { background-color: #f9b6ca; }
+
+        /* --- Scroll Animation --- */
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(40px) scale(0.96);
+            transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), 
+                        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: opacity, transform;
+        }
+        .reveal-element.is-revealed {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* --- Hover Motion (Framer Motion feel) --- */
+        .hover-card-effect {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+        .hover-card-effect:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            z-index: 10;
+        }
+        
+        .hover-card-effect:hover .anim-hop,
+        .hover-card-effect:hover .anim-wiggle,
+        .hover-card-effect:hover .anim-dance {
+            animation-duration: 0.5s !important;
+        }
+
+        /* --- Mascot System --- */
+        .mascot-container {
+            position: absolute;
+            display: inline-block;
+            z-index: 0;
+        }
+        .mascot-relative {
+            position: relative !important;
+        }
+
+        .mascot-md { width: 40px; height: 40px; }
+        .mascot-sm { width: 30px; height: 30px; }
+        .mascot-lg { width: 80px; height: 80px; }
+
+        .mascot-body {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mascot-eyes {
+            position: absolute;
+            top: 30%;
+            right: 25%;
+            display: flex;
+            gap: 3px;
+        }
+        .look-left .mascot-eyes { right: auto; left: 25%; flex-direction: row-reverse; }
+
+        .eye {
+            width: 10%;
+            height: 15%;
+            min-width: 3px; min-height: 4px;
+            background-color: #2d3748;
+            border-radius: 50%;
+            position: relative;
+        }
+        .eye::after {
+            content: ''; position: absolute;
+            top: 1px; right: 1px;
+            width: 40%; height: 40%;
+            background-color: white; border-radius: 50%;
+        }
+
+        .mascot-legs {
+            position: absolute;
+            bottom: -20%;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            padding: 0 20%;
+        }
+        .leg {
+            width: 2px; height: 10px;
+            background-color: #2d3748; border-radius: 2px;
+        }
+
+        /* Mascot Variations */
+        .mascot-red .mascot-body { background-color: #ef4444; border-radius: 40% 60% 60% 40% / 40% 40% 60% 60%; }
+        .mascot-blue .mascot-body { background-color: #3b82f6; border-radius: 50%; }
+        .mascot-green .mascot-body { background-color: #86efac; border-radius: 40% 40% 40% 40% / 60% 60% 40% 40%; height: 110%; top: -5%; }
+        .mascot-yellow .mascot-body { background-color: #eab308; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; height: 115%; top: -5%; }
+        .mascot-purple .mascot-body { background-color: #a855f7; border-radius: 50% 50% 40% 40% / 40% 40% 60% 60%; width: 110%; left: -5%; }
+        .mascot-orange .mascot-body { background-color: #f97316; border-radius: 40% 40% 50% 50% / 60% 60% 40% 40%; height: 120%; top: -10%; }
+        .mascot-peach .mascot-body { background-color: #fdba74; border-radius: 40% 40% 50% 50% / 60% 60% 40% 40%; height: 120%; top: -10%; }
+        .mascot-cream .mascot-body { background-color: #fef3c7; border-radius: 45% 55% 40% 60% / 50% 50% 50% 50%; height: 110%; }
+
+        /* Animations */
+        @keyframes hop { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        @keyframes wiggle { 0%, 100% { transform: rotate(-10deg); } 50% { transform: rotate(10deg); } }
+        @keyframes dance { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-5px) scale(1.05); } }
+
+        .anim-hop { animation: hop 1.5s infinite ease-in-out; }
+        .anim-wiggle { animation: wiggle 2s infinite ease-in-out; }
+        .anim-dance { animation: dance 1.2s infinite ease-in-out; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen flex items-center justify-center text-gray-800 relative">
+
+    <div class="dashboard-container w-full max-w-[1400px] min-h-[85vh] shadow-2xl p-6 md:p-8 flex flex-col gap-8 reveal-element">
+        
+        <!-- Header -->
+        <header class="flex flex-wrap gap-4 justify-between items-center bg-white/50 px-6 py-4 rounded-full shadow-sm backdrop-blur-sm reveal-element hover-card-effect" style="transition-delay: 50ms;">
+            <div class="flex items-center gap-3">
+                <div class="bg-gray-900 text-white p-2 rounded-xl"><i data-lucide="bot" class="w-6 h-6"></i></div>
+                <h1 class="text-xl font-bold tracking-wide">Bestie Bot US</h1>
+            </div>
+            <nav class="hidden lg:flex items-center gap-8 text-sm font-medium text-gray-600">
+                <a href="#" class="hover:text-black transition">ภาพรวม (Overview)</a>
+                <a href="#" class="text-black bg-white px-5 py-2 rounded-full shadow-sm font-semibold transition hover:-translate-y-1">11 Features + Insight</a>
+                <a href="#" class="hover:text-black transition">เปรียบเทียบ (Compare)</a>
+            </nav>
+            <div class="hidden md:block w-[100px]"></div>
+        </header>
+
+        <!-- Main Grid -->
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8 relative z-10">
+            
+            <!-- Left Column (Span 9) -->
+            <div class="xl:col-span-9 flex flex-col gap-8">
+                
+                <!-- Section 1: Comparison -->
+                <div class="reveal-element" style="transition-delay: 100ms;">
+                    <h2 class="text-2xl font-semibold mb-4 ml-2">ทำไมต้อง Bestie Bot คะ? ✨</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-white rounded-[24px] p-4 flex items-center gap-4 shadow-sm relative overflow-hidden group hover-card-effect reveal-element" style="transition-delay: 150ms;">
+                            <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center shrink-0 relative z-10"><i data-lucide="newspaper" class="text-gray-500"></i></div>
+                            <div class="relative z-10">
+                                <h3 class="font-semibold text-sm">อ่านข่าวเอง</h3>
+                                <p class="text-xs text-gray-500 mt-1">เสียเวลาเปิดหลายแท็บ ต้องตีความภาษาอังกฤษเอง</p>
+                            </div>
+                            <span class="ml-auto bg-gray-100 text-gray-500 text-[10px] px-2 py-1 rounded-full whitespace-nowrap relative z-10">ช้า & เหนื่อย</span>
+                            <div class="mascot-container mascot-sm mascot-blue anim-hop bottom-2 -right-2 opacity-40">
+                                <div class="mascot-body"><div class="mascot-eyes"><div class="eye"></div><div class="eye"></div></div><div class="mascot-legs"><div class="leg"></div><div class="leg"></div></div></div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-[24px] p-4 flex items-center gap-4 shadow-sm relative overflow-hidden group hover-card-effect reveal-element" style="transition-delay: 250ms;">
+                            <div class="mascot-container mascot-sm mascot-purple anim-wiggle look-left bottom-2 left-2 opacity-50">
+                                <div class="mascot-body"><div class="mascot-eyes"><div class="eye"></div><div class="eye"></div></div><div class="mascot-legs"><div class="leg"></div><div class="leg"></div></div></div>
+                            </div>
+                            <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center shrink-0 relative z-10"><i data-lucide="brain" class="text-blue-500"></i></div>
+                            <div class="relative z-10">
+                                <h3 class="font-semibold text-sm">ถาม AI ทั่วไป</h3>
+                                <p class="text-[11px] text-gray-500 mt-1 leading-tight">ข้อมูลเรียลไทม์แต่อาจจะเพี้ยน ไม่ตรงบ้าง ต้องถามย้ำและถามทีละครั้ง</p>
+                            </div>
+                            <span class="ml-auto bg-blue-100 text-blue-600 text-[10px] px-2 py-1 rounded-full whitespace-nowrap relative z-10">อาจคลาดเคลื่อน</span>
+                        </div>
+                        <div class="bg-gradient-to-r from-orange-100 to-pink-100 rounded-[24px] p-4 flex items-center gap-4 shadow-sm border border-orange-200 relative overflow-hidden group hover-card-effect reveal-element" style="transition-delay: 350ms;">
+                            <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm relative z-10"><i data-lucide="sparkles" class="text-orange-500"></i></div>
+                            <div class="relative z-10">
+                                <h3 class="font-semibold text-sm">Bestie Bot 🇺🇸</h3>
+                                <p class="text-[11px] text-gray-600 mt-1 leading-snug"><b>ไม่ต้องถามทีละคำสั่ง สรุปจุดเด่นที่อยากรู้ไว้แล้ว</b> ราคาสด ข่าวสด จบในที่เดียว</p>
+                            </div>
+                            <span class="ml-auto bg-white text-orange-600 font-bold text-[10px] px-2 py-1 rounded-full shadow-sm whitespace-nowrap relative z-10">เร็ว & แม่นยำ</span>
+                            <div class="mascot-container mascot-sm mascot-red anim-dance bottom-2 right-2 opacity-80">
+                                <div class="mascot-body"><div class="mascot-eyes"><div class="eye"></div><div class="eye"></div></div><div class="mascot-legs"><div class="leg"></div><div class="leg"></div></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Core Features -->
+                <div class="reveal-element" style="transition-delay: 100ms;">
+                    <div class="flex items-center gap-2 mb-4 ml-2">
+                        <div class="bg-black text-white p-1.5 rounded-full"><i data-lucide="layout-dashboard" class="w-4 h-4"></i></div>
+                        <h2 class="text-xl font-semibold">ฟีเจอร์การลงทุนหลัก (Core Features)</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="card-orange rounded-[32px] p-6 pb-8 relative overflow-hidden group hover-card-effect reveal-element" style="transition-delay: 150ms;">
+                            <div class="flex items-center gap-2 bg-white/40 px-3 py-1.5 rounded-full backdrop-blur-sm w-fit mb-6">
+                                <i data-lucide="trending-up" class="w-4 h-4"></i><span class="text-sm font-medium">1. หุ้นสหรัฐ 🇺🇸</span>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-2">Realtime Data</h3>
+                            <p class="text-sm text-gray-700 w-3/4">ดึงราคา Yahoo Finance สด + AI วิเคราะห์บริษัท จุดแข็ง เทคนิคอล Entry/SL/Target + Catalyst</p>
+                            <div class="mascot-container mascot-md mascot-red anim-hop bottom-6 right-6">
+                                <div class="mascot-body"><div class="mascot-eyes"><div class="eye"></div><div class="eye"></div></div><div class="mascot-legs"><div class="leg"></div><div class="leg"></div></div></div>
+                            </div>
+                        </div>
+
+                        <div class="card-blue rounded-[32px] p-6 pb-8 relative overflow-hidden group hover-card-effect reveal-element" style="transition-delay: 250ms;">
+                            <div class="flex justify-end mb-6">
+                                <div class="flex items-center gap-2 bg-white/40 px-3 py-1.5 rounded-full backdrop-blur-sm w-fit">
+                                    <i data-lucide="pie-chart" class="w-4 h-4"></i><span class="text-sm font-medium">2. จัดพอร์ต ETF 🏦</span>
+                                </div>
+                            </div>
+                            <div class="text-right ml-auto w-3/4">
+                                <h3 class="text-2xl font-bold mb-2">Smart Categorized</h3>
+                                <p class="text-sm text-gray-700">แนะนำ 8-10 ETF พร้อมเหตุผลและความเสี่ยง จัดหมวดหมู่ให้เสร็จ ไม่ต้องหาเอง</p>
+                            </div>
+                            <div class="mascot-container mascot-md mascot-green anim-wiggle look-left bottom-6 left-6">
+                                <div class="mascot-body"><div class="mascot-eyes"><div class="eye"></div><div class="eye"></div></div><div class="mascot-legs"><div class="leg"></div><div class="leg"></div></div></div>
+                            </div>
+                        </div>
+
+                        <div class="card-purple rounded-[32px] p-6 pb-8 relative overflow-hidden group hover-card-effect reveal-element" style="transition-delay: 350ms;">
+                            <div class="flex items-center gap-2 bg-white/40 px-3 py-1.5 rounded-full backdrop-blur-sm w-fit mb-6">
+                                <i data-lucide="bitcoin" class="w-4 h-4"></i><span class="text-sm font-medium">3. คริปโต 🪙</span>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-2">Top 5 Coins</h3>
+                            <p class="text-sm text-gray-700 w-3/4">สรุปภาพรวมตลาดวันนี้ แนะนำ 5 เหรียญน่าสนใจ พร้อมปุ่มกดดูเจาะลึก BTC/ETH/SOL ทันที</p>
+                            <div class="mascot-container mascot-md mascot-cream anim-dance bottom-6 right-6">
+                                <div class="mascot-body"><div class="mascot-eyes"><div class="eye"></div><div class="eye"></div></div><div class="mascot-legs"><div class="leg"></div><div class="leg"></div></div></div>
+                            </div>
+                        </div>
+
+                        <div class="card-pink rounded-[32px] p-6 pb-8 relative overflow-hidden group hover-card-effect reveal-element" style="transition-delay: 450ms;">
+                            <div class="flex justify-end mb-6">
+                                <div class="flex items-center gap-2 bg-white/40 px-3 py-1.5 rounded-full backdrop-blur-sm w-fit">
+                                    <i data-lucide="award" class="w-4 h-4"></i><span class="text-sm font-medium">4. ทองคำโลก 🥇</span>
+                                </div>
+                            </div>
+                            <div class="text-right ml-auto w-3/4">
+                                <h3 class="text-2xl font-bold mb-2">XAU/USD Live</h3>
+                                <p class="text-sm text-gray-700">ดึงราคาสด + AI วิเคราะห์เทรนด์ จุดแข็ง ความเสี่ยง อัปเดตปัจจัยบวก/ลบด้วยภาษาไทย</p>
+                            </div>
+                            <div class="mascot-container mascot-md mascot-yellow anim-hop look-left bottom-6 left-6">
+                                <div class="mascot-body"><div class="mascot-eyes"><div class="eye"></div><div class="eye"></div></div><div class="mascot-legs"><div class="leg"></div><div class="leg"></div></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Advanced Tools -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    
+                    <div class="bg-white rounded-[32px] p-6 shadow-sm relative overflow-hidden group hover-card-effect reveal-element">
+                        <div class="flex items-center gap-2 mb-6 relative z-10">
+                            <div class="bg-black text-white p-1.5 rounded-full"><i data-lucide="bar-chart-2" class="w-4 h-4"></i></div>
+                            <h3 class="font-semibold">เครื่องมือวิเคราะห์ลึก</h3>
+                        </div>
+                        <div class="mascot-container mascot-md mascot-purple anim-wiggle bottom-6 right-6 opacity-30">
+                            <div class="mascot-body"><div class="mascot-eyes"><div class="eye"></div><div class="eye"></div></div><div class="mascot-legs"><div class="leg"></div><div class="leg"></div></div></div>
+                        </div>
+
+                        <div class="space-y-6 relative z-10">
+                            <div class="reveal-element" style="transition-delay: 100ms;">
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span class="font-medium flex items-center gap-2"><i data-lucide="crosshairs" class="w-4 h-4 text-purple-500"></i> 5. แนวรับแนวต้าน</span>
+                                    <span class="text-purple-600 bg-purple-50 px-2 py-0.5 rounded text-xs">Real OHLC</span>
+                                </div>
+                                <div class="h-2 w-[85%] bg-gray-100 rounded-full overflow-hidden"><div class="h-full bg-purple-400 w-[40%] rounded-full"></div></div>
+                                <div class="flex justify-between text-[11px] text-gray-500 mt-1 w-[85%]">
+                                    <span>คำนวณ R1-R3 / S1-S3 ทันที</span><span>แม่นยำ 30-40%</span>
+                                </div>
+                            </div>
+                            <div class="pt-2 flex items-center justify-between reveal-element" style="transition-delay: 200ms;">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500"><span class="font-bold text-xs">TH</span></div>
+                                    <div>
+                                        <p class="text-sm font-semibold">6. ราคาทองไทย</p>
+                                        <p class="text-xs text-gray-500">ดึงสด thaigold.info</p>
+                                    </div>
+                                </div>
+                                <span class="bg-gray-100 text-xs px-3 py-1 rounded-full z-10">เน้นทองคำแท่ง</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-[32px] p-6 shadow-sm relative overflow-hidden group hover-card-effect reveal-element" style="transition-delay: 150ms;">
+                        
+                        <div class="flex justify-start items-center gap-2 mb-8 relative z-10">
+                            <div class="flex items-center gap-2">
+                                <div class="bg-black text-white p-1.5 rounded-full"><i data-lucide="layers" class="w-4 h-4"></i></div>
+                                <h3 class="font-semibold text-left">ข้อมูลเสริม & วางแผน</h3>
+                            </div>
+                        </div>
+
+                        <div class="mascot-container mascot-md mascot-peach anim-dance top-6 right-6 z-0 opacity-40">
+                            <div class="mascot-body"><div class="mascot-eyes"><div class="eye"></div><div class="eye"></div></div><div class="mascot-legs"><div class="leg"></div><div class="leg"></div></div></div>
+                        </div>
+
+                        <div class="relative pl-4 border-l-2 border-gray-100 space-y-6 text-left relative z-10 pb-2">
+                            
+                            <div class="relative reveal-element flex justify-between items-start gap-4" style="transition-delay: 200ms;">
+                                <div class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-blue-500 border-2 border-white"></div>
+                                <div class="pl-2">
+                                    <p class="text-sm font-semibold">7. สรุปข่าว 15 แหล่ง</p>
+                                    <p class="text-xs text-gray-500 mt-1">CNBC, Reuters สรุปเช้า-เย็น</p>
+                                </div>
+                                <span class="bg-blue-100 text-blue-600 text-[10px] px-3 py-1 rounded-full font-medium shadow-sm shrink-0 mt-0.5">Auto</span>
+                            </div>
+                            
+                            <div class="relative reveal-element flex justify-between items-start gap-4" style="transition-delay: 300ms;">
+                                <div class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-orange-400 border-2 border-white"></div>
+                                <div class="pl-2">
+                                    <p class="text-sm font-semibold">8. คัดกรองหุ้นตาม Sector</p>
+                                    <p class="text-xs text-gray-500 mt-1">เทค, ยา, การเงิน พร้อมเหตุผล</p>
+                                </div>
+                                <span class="bg-orange-100 text-orange-600 text-[10px] px-3 py-1 rounded-full font-medium shadow-sm shrink-0 mt-0.5">Menu</span>
+                            </div>
+                            
+                             <div class="relative reveal-element flex justify-between items-start gap-4" style="transition-delay: 400ms;">
+                                <div class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-pink-400 border-2 border-white"></div>
+                                <div class="pl-2">
+                                    <p class="text-sm font-semibold">9. วางแผนเกษียณครบชุด</p>
+                                    <p class="text-xs text-gray-500 mt-1">คำนวณเป้าหมาย ผลตอบแทน</p>
+                                </div>
+                                <span class="bg-pink-100 text-pink-600 text-[10px] px-3 py-1 rounded-full font-medium shadow-sm shrink-0 mt-0.5">Planner</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Notifications -->
+                <div class="bg-white rounded-[32px] p-6 shadow-sm border border-gray-100 relative overflow-hidden group hover-card-effect reveal-element">
+                    <div class="mascot-container mascot-md mascot-blue anim-hop top-8 right-8 opacity-20"><div class="mascot-body"><div class="mascot-eyes"><div class="eye"></div><div class="eye"></div></div><div class="mascot-legs"><div class="leg"></div><div class="leg"></div></div></div></div>
+                    <div class="mascot-container mascot-md mascot-green anim-wiggle look-left bottom-12 left-8 opacity-20"><div class="mascot-body"><div class="mascot-eyes"><div class="eye"></div><div class="eye"></div></div><div class="mascot-legs"><div class="leg"></div><div class="leg"></div></div></div></div>
+
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 relative z-10">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-[#d1b1f6] text-purple-900 p-2.5 rounded-xl shadow-sm"><i data-lucide="bell-ring" class="w-6 h-6"></i></div>
+                            <div>
+                                <h2 class="text-xl font-bold tracking-tight">📬 การแจ้งเตือนอัตโนมัติ</h2>
+                                <p class="text-xs text-gray-500 font-medium">ส่งจันทร์–ศุกร์ (เสาร์-อาทิตย์หยุด ยกเว้น Weekly Outlook)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 relative z-10">
+                        <div>
+                            <h3 class="text-sm font-bold border-b pb-3 mb-5 flex items-center gap-2"><i data-lucide="clock" class="w-4 h-4 text-gray-400"></i> แจ้งเตือนรายวัน (Daily)</h3>
+                            <div class="relative pl-8 border-l-2 border-orange-100 space-y-5">
+                                <div class="relative"><div class="absolute -left-[45px] top-0 text-xl bg-white p-1 rounded-full shadow-sm">☀️</div><h4 class="text-sm font-bold text-orange-600">08:00 — Morning Brief</h4><p class="text-xs text-gray-600 mt-1 bg-orange-50/50 p-2.5 rounded-xl">สรุปตลาด US, ข่าวสำคัญ 15 แหล่ง อ่านจบใน 1 นาที</p></div>
+                                <div class="relative"><div class="absolute -left-[45px] top-0 text-xl bg-white p-1 rounded-full shadow-sm">🥇</div><h4 class="text-sm font-bold text-yellow-600">09:00 — Gold Daily</h4><p class="text-xs text-gray-600 mt-1 bg-yellow-50/50 p-2.5 rounded-xl">สรุปทองคำ XAU/USD, โซนสำคัญ, ข่าวกระทบทอง</p></div>
+                                <div class="relative"><div class="absolute -left-[45px] top-0 text-xl bg-white p-1 rounded-full shadow-sm">🍵</div><h4 class="text-sm font-bold text-green-600">15:00 — Wealth Mindset</h4><p class="text-xs text-gray-600 mt-1 bg-green-50/50 p-2.5 rounded-xl">บทความเตือนสติ เชื่อมโยงข่าวตลาดวันนั้น สไตล์เพื่อนสาว</p></div>
+                                <div class="relative"><div class="absolute -left-[45px] top-0 text-xl bg-white p-1 rounded-full shadow-sm">🌙</div><h4 class="text-sm font-bold text-purple-600">19:00 — Evening Brief</h4><p class="text-xs text-gray-600 mt-1 bg-purple-50/50 p-2.5 rounded-xl">สรุปตลาดรอบค่ำ World Indices + กลยุทธ์คืนนี้</p></div>
+                                <div class="relative"><div class="absolute -left-[45px] top-0 text-xl bg-white p-1 rounded-full shadow-sm">🌑</div><h4 class="text-sm font-bold text-blue-700">20:00 — Pre-Market Alert</h4><p class="text-xs text-gray-600 mt-1 bg-blue-50/50 p-2.5 rounded-xl">ดึง Futures (ES=F, NQ=F) + ข่าวร้อนก่อนตลาดเปิด</p></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-sm font-bold border-b pb-3 mb-5 flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4 text-gray-400"></i> รายสัปดาห์ & สแกนเนอร์</h3>
+                            <div class="space-y-3 mb-6">
+                                <div class="bg-gray-50 p-3.5 rounded-2xl flex items-start gap-3"><div class="text-xl">📅</div><div><p class="text-sm font-semibold">จันทร์ 08:00 — Economic Calendar</p><p class="text-xs text-gray-600 mt-1">สรุปปฏิทินเศรษฐกิจ (CPI, NFP) พร้อมวิธีรับมือ</p></div></div>
+                                <div class="bg-gray-50 p-3.5 rounded-2xl flex items-start gap-3"><div class="text-xl">📅</div><div><p class="text-sm font-semibold">อาทิตย์ 20:00 — Weekly Outlook</p><p class="text-xs text-gray-600 mt-1">คาดการณ์สัปดาห์หน้า (หุ้น, ทอง, BTC) + กลยุทธ์</p></div></div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="bg-blue-50/50 p-3.5 rounded-2xl"><p class="text-sm font-semibold flex justify-between"><span>⚡ Sniper Signal <span class="text-[9px] bg-red-100 text-red-600 px-1.5 rounded-full">พัฒนา</span></span> <span class="text-[10px] text-gray-500">ทุก 30 นาที</span></p><p class="text-xs text-gray-600 mt-1">สแกนตลาดทอง ส่งเฉพาะตอนเจอสัญญาณ BUY/SELL</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 5: Daily Insights -->
+                <div class="bg-white rounded-[32px] p-6 md:p-8 shadow-sm border border-gray-100 relative overflow-hidden group hover-card-effect reveal-element">
+                    
+                    <div class="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6 relative z-10">
+                        <div class="flex items-start gap-3">
+                            <div class="bg-indigo-100 text-indigo-600 p-2.5 rounded-xl shadow-sm mt-1">
+                                <i data-lucide="lightbulb" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold tracking-tight text-indigo-900">💡 รับ Insight การลงทุนทุกวัน</h2>
+                                <p class="text-xs md:text-sm text-gray-600 mt-1 leading-relaxed max-w-2xl">
+                                    เหมือนมีนักวิเคราะห์ส่วนตัวใน LINE ไม่ต้องนั่งเปิด Google ไม่ต้องถาม AI เอง Bestie ส่งความรู้การเงินการลงทุนมาหาคุณ 3 รอบต่อวัน ทุกวัน ไม่เว้นวันหยุด เช่น
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
+                        <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="bg-indigo-50/30 rounded-2xl p-4 border border-indigo-100/50 hover:border-indigo-300 transition hover:-translate-y-1">
+                                <h4 class="text-sm font-bold flex items-center gap-2 mb-1 text-indigo-800">🏦 Fund Spotlight</h4>
+                                <p class="text-[11px] text-gray-600 leading-relaxed">เจาะลึก Top 10 หุ้นที่กองทุนดังถืออยู่ ARK, Fidelity, Vanguard, Bridgewater และอื่นๆ รู้ว่าเงินใหญ่เขาเล่นอะไรกันอยู่</p>
+                            </div>
+                            <div class="bg-indigo-50/30 rounded-2xl p-4 border border-indigo-100/50 hover:border-indigo-300 transition hover:-translate-y-1">
+                                <h4 class="text-sm font-bold flex items-center gap-2 mb-1 text-indigo-800">👑 Guru Watch</h4>
+                                <p class="text-[11px] text-gray-600 leading-relaxed">Warren Buffett ซื้ออะไรล่าสุด? Cathie Wood ขายอะไรออก? Michael Burry เดิมพันอะไรอยู่? สรุปกลยุทธ์นักลงทุนระดับโลกให้อ่านจบใน 1 นาที</p>
+                            </div>
+                            <div class="bg-indigo-50/30 rounded-2xl p-4 border border-indigo-100/50 hover:border-indigo-300 transition hover:-translate-y-1">
+                                <h4 class="text-sm font-bold flex items-center gap-2 mb-1 text-indigo-800">🔥 Why Trending</h4>
+                                <p class="text-[11px] text-gray-600 leading-relaxed">หุ้นตัวนี้ทำไมถึงวิ่งแรงวันนี้? อธิบาย Catalyst ความเสี่ยง และมุมมองนักวิเคราะห์ ไม่ต้องตามข่าวเองอีกต่อไป</p>
+                            </div>
+                            <div class="bg-indigo-50/30 rounded-2xl p-4 border border-indigo-100/50 hover:border-indigo-300 transition hover:-translate-y-1">
+                                <h4 class="text-sm font-bold flex items-center gap-2 mb-1 text-indigo-800">💎 Hidden Gem</h4>
+                                <p class="text-[11px] text-gray-600 leading-relaxed">Small & Mid Cap ที่ยังไม่ดัง แต่ Fundamentals แข็ง อยู่ใน Sector กำลัง Grow เจอก่อนคนอื่น ได้ก่อนคนอื่น</p>
+                            </div>
+                            <div class="bg-indigo-50/30 rounded-2xl p-4 border border-indigo-100/50 hover:border-indigo-300 transition hover:-translate-y-1">
+                                <h4 class="text-sm font-bold flex items-center gap-2 mb-1 text-indigo-800">📊 Sector Rotation</h4>
+                                <p class="text-[11px] text-gray-600 leading-relaxed">Smart Money กำลังย้ายเงินจาก Sector ไหนไป Sector ไหน? รู้ทิศทางเงินสถาบันก่อน แล้วค่อยตัดสินใจ</p>
+                            </div>
+                            <div class="bg-indigo-50/30 rounded-2xl p-4 border border-indigo-100/50 hover:border-indigo-300 transition hover:-translate-y-1">
+                                <h4 class="text-sm font-bold flex items-center gap-2 mb-1 text-indigo-800">🧠 Investing Concept</h4>
+                                <p class="text-[11px] text-gray-600 leading-relaxed">อธิบาย 1 concept การลงทุนที่เชื่อมกับสถานการณ์ตลาดวันนั้น เช่น P/E ratio, Moat, DCA ภาษาเข้าใจง่าย ไม่ต้องมีพื้นฐานก็อ่านรู้เรื่อง</p>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-4">
+                            <div class="bg-indigo-50 rounded-3xl p-5 border border-indigo-100 flex-1 relative overflow-hidden">
+                                <div class="mascot-container mascot-md mascot-purple anim-hop top-4 right-4 opacity-10">
+                                    <div class="mascot-body"><div class="mascot-eyes"><div class="eye"></div><div class="eye"></div></div><div class="mascot-legs"><div class="leg"></div><div class="leg"></div></div></div>
+                                </div>
+                                <h3 class="text-sm font-bold border-b border-indigo-200 pb-2 mb-4 text-indigo-900">เวลาส่ง Insight 🕒</h3>
+                                <div class="space-y-4">
+                                    <div class="flex gap-3 items-start">
+                                        <span class="text-lg">☀️</span>
+                                        <div><p class="text-sm font-bold text-indigo-900">08:00 — Insight เช้า</p><p class="text-xs text-indigo-700">เริ่มวันด้วยความรู้</p></div>
+                                    </div>
+                                    <div class="flex gap-3 items-start">
+                                        <span class="text-lg">🌤️</span>
+                                        <div><p class="text-sm font-bold text-indigo-900">14:00 — Insight บ่าย</p><p class="text-xs text-indigo-700">ช่วงพักกลางวัน</p></div>
+                                    </div>
+                                    <div class="flex gap-3 items-start">
+                                        <span class="text-lg">🌙</span>
+                                        <div><p class="text-sm font-bold text-indigo-900">20:00 — Insight เย็น</p><p class="text-xs text-indigo-700">ก่อนนอนได้ความรู้</p></div>
+                                    </div>
+                                </div>
+                                <div class="mt-4 pt-3 border-t border-indigo-200 text-[10px] text-indigo-600 font-bold leading-tight">
+                                    ทุกวัน ไม่เว้นเสาร์-อาทิตย์ เพราะการลงทุนไม่มีวันหยุด
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-purple-500 to-indigo-500 rounded-2xl p-4 text-center shadow-md border border-purple-400">
+                                <p class="text-xs font-bold text-white tracking-wide leading-relaxed">อ่านวันละ 1 นาที สะสมความรู้ไปเรื่อยๆ<br>แล้วพอร์ตจะพูดแทนได้เอง 💜</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Sidebar (Span 3) -->
+            <div class="xl:col-span-3 flex flex-col gap-6">
+                
+                <div class="bg-white rounded-[32px] p-6 shadow-sm flex flex-col items-center text-center relative group hover-card-effect reveal-element">
+                    
+                    <div class="w-full flex justify-center mt-2 mb-4 relative z-10">
+                        <div class="mascot-container mascot-relative mascot-lg mascot-orange anim-dance">
+                            <div class="mascot-body shadow-lg"><div class="mascot-eyes" style="top:25%;right:35%;gap:8px;"><div class="eye" style="width:8px;height:12px;"></div><div class="eye" style="width:8px;height:12px;"></div></div><div class="mascot-legs" style="bottom:-15px;"><div class="leg" style="height:20px;"></div><div class="leg" style="height:20px;"></div></div></div>
+                        </div>
+                    </div>
+
+                    <h2 class="text-xl font-bold mb-1 reveal-element" style="transition-delay: 100ms;">สรุป Bestie Bot 💖</h2>
+                    <p class="text-xs text-gray-500 px-4 mb-6 reveal-element" style="transition-delay: 200ms;">เหนือกว่าการอ่านข่าวเอง และฉลาดกว่า AI ทั่วไปค่ะ</p>
+
+                    <div class="w-full bg-orange-50 rounded-2xl p-4 text-left border border-orange-100 reveal-element" style="transition-delay: 300ms;">
+                        <h4 class="text-sm font-semibold flex items-center gap-2 mb-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-orange-500"></i> จุดเด่นที่ต่างจากที่อื่น</h4>
+                        <ul class="text-xs text-gray-600 space-y-2">
+                            <li>• ได้ราคา <b>Real-time</b> ทันที</li>
+                            <li>• รวมข่าวให้ <b>ไม่ต้องหาเอง</b></li>
+                            <li>• มี AI สรุป Action plan ชัดเจน</li>
+                            <li>• แจ้งเตือนอัตโนมัติผ่าน LINE</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-[32px] p-6 shadow-sm relative overflow-hidden group hover-card-effect reveal-element" style="transition-delay: 200ms;">
+                    
+                    <div class="mascot-container mascot-sm mascot-green anim-wiggle bottom-8 right-6 z-10">
+                        <div class="mascot-body"><div class="mascot-eyes"><div class="eye"></div><div class="eye"></div></div><div class="mascot-legs"><div class="leg"></div><div class="leg"></div></div></div>
+                    </div>
+
+                    <div class="flex justify-start items-center mb-4 relative z-10">
+                        <div class="flex items-center gap-2">
+                            <div class="bg-black text-white p-1.5 rounded-full"><i data-lucide="briefcase" class="w-4 h-4"></i></div>
+                            <h3 class="font-semibold text-sm">11. ติดตามพอร์ต</h3>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl text-left relative z-10 mr-12">
+                        <div class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-blue-500 shrink-0"><i data-lucide="pie-chart"></i></div>
+                        <div>
+                            <h4 class="text-sm font-semibold">ลิงก์ไป Google Finance</h4>
+                            <p class="text-[10px] text-gray-500 mt-1 leading-tight">เพิ่มหุ้นที่สนใจ ดูข่าวรายตัว<br>แล้วนำมาถามวิเคราะห์ต่อได้ค่ะ</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-revealed');
+                    }
+                });
+            }, { threshold: 0.05, rootMargin: "0px 0px -50px 0px" });
+
+            document.querySelectorAll('.reveal-element').forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+</html>
