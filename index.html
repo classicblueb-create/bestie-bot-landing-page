@@ -147,6 +147,8 @@
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        html { scroll-behavior: smooth; }
     </style>
 </head>
 <body class="p-4 md:p-8 min-h-screen flex items-center justify-center text-gray-800 relative">
@@ -160,9 +162,9 @@
                 <h1 class="text-xl font-bold tracking-wide">Bestie Bot US</h1>
             </div>
             <nav class="hidden lg:flex items-center gap-8 text-sm font-medium text-gray-600">
-                <a href="#" class="hover:text-black transition">ภาพรวม (Overview)</a>
-                <a href="#" class="text-black bg-white px-5 py-2 rounded-full shadow-sm font-semibold transition hover:-translate-y-1">11 Features + Insight</a>
-                <a href="#" class="hover:text-black transition">เปรียบเทียบ (Compare)</a>
+                <a href="#overview" class="hover:text-black transition">ภาพรวม (Overview)</a>
+                <a href="#features" class="text-black bg-white px-5 py-2 rounded-full shadow-sm font-semibold transition hover:-translate-y-1">11 Features + Insight</a>
+                <a href="#compare" class="hover:text-black transition">เปรียบเทียบ (Compare)</a>
             </nav>
             <div class="hidden md:block w-[100px]"></div>
         </header>
@@ -174,7 +176,7 @@
             <div class="xl:col-span-9 flex flex-col gap-8">
                 
                 <!-- Section 1: Comparison -->
-                <div class="reveal-element" style="transition-delay: 100ms;">
+                <div id="compare" class="reveal-element" style="transition-delay: 100ms;">
                     <h2 class="text-2xl font-semibold mb-4 ml-2">ทำไมต้อง Bestie Bot คะ? ✨</h2>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div class="bg-white rounded-[24px] p-4 flex items-center gap-4 shadow-sm relative overflow-hidden group hover-card-effect reveal-element" style="transition-delay: 150ms;">
@@ -214,7 +216,7 @@
                 </div>
 
                 <!-- Section 2: Core Features -->
-                <div class="reveal-element" style="transition-delay: 100ms;">
+                <div id="features" class="reveal-element" style="transition-delay: 100ms;">
                     <div class="flex items-center gap-2 mb-4 ml-2">
                         <div class="bg-black text-white p-1.5 rounded-full"><i data-lucide="layout-dashboard" class="w-4 h-4"></i></div>
                         <h2 class="text-xl font-semibold">ฟีเจอร์การลงทุนหลัก (Core Features)</h2>
@@ -479,7 +481,7 @@
             <!-- Right Sidebar (Span 3) -->
             <div class="xl:col-span-3 flex flex-col gap-6">
                 
-                <div class="bg-white rounded-[32px] p-6 shadow-sm flex flex-col items-center text-center relative group hover-card-effect reveal-element">
+                <div id="overview" class="bg-white rounded-[32px] p-6 shadow-sm flex flex-col items-center text-center relative group hover-card-effect reveal-element">
                     
                     <div class="w-full flex justify-center mt-2 mb-4 relative z-10">
                         <div class="mascot-container mascot-relative mascot-lg mascot-orange anim-dance">
@@ -542,5 +544,20 @@
             document.querySelectorAll('.reveal-element').forEach(el => observer.observe(el));
         });
     </script>
+
+    <!-- Footer -->
+    <footer class="w-full max-w-[1400px] mx-auto mt-6 mb-2 px-4">
+        <div class="bg-white/40 backdrop-blur-sm rounded-2xl px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 border border-white/60">
+            <div class="flex items-center gap-2">
+                <div class="bg-gray-900 text-white p-1.5 rounded-lg"><i data-lucide="bot" class="w-4 h-4"></i></div>
+                <span class="text-sm font-semibold text-gray-700">Bestie Bot US</span>
+            </div>
+            <p class="text-xs text-gray-500 font-medium text-center">
+                © 2026 BestieInvesting — เพื่อนซี้ชอบลงทุน · All rights reserved
+            </p>
+            <p class="text-[10px] text-gray-400">ข้อมูลเพื่อการศึกษาเท่านั้น ไม่ใช่คำแนะนำการลงทุน</p>
+        </div>
+    </footer>
+
 </body>
-</html>
+</h
